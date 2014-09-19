@@ -1,12 +1,6 @@
 'use strict';
 
 (function ($) {
-  // require doT
-  if (!doT) {
-    console.error('You don\'t have doT installed, get it from here: http://olado.github.io/doT/ to use this modal');
-    return false;
-  }
-
   var tmpl,
       $container = {},
       $modal,
