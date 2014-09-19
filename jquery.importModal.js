@@ -54,15 +54,8 @@
     $('.b-modal').append($closeBtn);
     $('.b-modal').append(html);
 
-    // check if the window has a scrollbar or not by comparing the widths of the div and window
-    if (containerEl.offsetWidth === containerEl.clientWidth) {
-      hazScollbar = false;
-    } else {
-      hazScollbar = true;
-    }
-
     // lock up the scrolling on the body if there's a vertical scrollbar
-    if(hazScollbar) {
+    if(hazScollbar()) {
       $('body').css({
         'overflow': 'hidden',
         'padding-right': '15px' // fix the scrollbar from pushing the content
@@ -81,9 +74,7 @@
   }; // openModal
 
   var closeModal = function () {
-    $container = $('.b-modal-container');
-
-    if(hazScollbar) {
+    if(hazScollbar()) {
       $container.fadeOut(function () {
         // restore the scrollbar on callback
         $('body').css({
@@ -99,6 +90,35 @@
       });
     }
   }; // closeModal
+
+  var hazScollbar = function () {
+    var outer = document.createElement('div'),
+        widthNoScroll,
+        inner,
+        widthWithScroll;
+
+    outer.style.visibility = 'hidden';
+    outer.style.width = '100px';
+    outer.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+
+    document.body.appendChild(outer);
+
+    widthNoScroll = outer.offsetWidth;
+    // force scrollbars
+    outer.style.overflow = 'scroll';
+
+    // add innerdiv
+    inner = document.createElement('div');
+    inner.style.width = '100%';
+    outer.appendChild(inner);
+
+    widthWithScroll = inner.offsetWidth;
+
+    // remove divs
+    outer.parentNode.removeChild(outer);
+
+    return widthNoScroll - widthWithScroll;
+  }; // hazScrollbar
 
   var bind = function() {
     // bind close modal
