@@ -7,7 +7,8 @@
       $closeBtn,
       selector,
       closeBtn = '.b-btn_close-modal',
-      html;
+      html,
+      hazScollbar;
 
   var bindModal = function () {
     $(selector).on('click', function (e) {
@@ -53,8 +54,15 @@
     $('.b-modal').append($closeBtn);
     $('.b-modal').append(html);
 
+    // check if the window has a scrollbar or not by comparing the widths of the div and window
+    if (containerEl.offsetWidth === containerEl.clientWidth) {
+      hazScollbar = false;
+    } else {
+      hazScollbar = true;
+    }
+
     // lock up the scrolling on the body if there's a vertical scrollbar
-    if(scrollVisible) {
+    if(hazScollbar) {
       $('body').css({
         'overflow': 'hidden',
         'padding-right': '15px' // fix the scrollbar from pushing the content
@@ -75,7 +83,7 @@
   var closeModal = function () {
     $container = $('.b-modal-container');
 
-    if(scrollVisible) {
+    if(hazScollbar) {
       $container.fadeOut(function () {
         // restore the scrollbar on callback
         $('body').css({
@@ -84,15 +92,13 @@
         });
       });
     } else {
-      $('body').css({
-        'overflow': ''
-      })
+      $container.fadeOut(function () {
+        $('body').css({
+          'overflow': ''
+        });
+      });
     }
   }; // closeModal
-
-  var scrollVisible = function () {
-    return $(document).height() > $(window).height() && !Modernizr.touch;
-  }; // scrollVisible
 
   var bind = function() {
     // bind close modal
