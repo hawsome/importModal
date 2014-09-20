@@ -8,7 +8,9 @@
       selector,
       closeBtn = '.b-btn_close-modal',
       html,
-      hazScollbar;
+      hazScollbar,
+      documentWidth = document.body.clientWidth,
+      responsiveWidth;
 
   var bindModal = function () {
     $(selector).on('click', function (e) {
@@ -28,13 +30,19 @@
     if (!$container.length) {
       containerEl.style.cssText = 'display: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 999999; overflow-x: hidden; overflow-y: auto;';
       containerEl.className = 'b-modal-container';
-      backgroundEl.style.cssText = 'display: table; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
+      backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
-      centerEl.style.cssText = 'display: table-cell; text-align: center; vertical-align: middle;';
-      modalEl.style.cssText = 'position: relative; max-width: 100%; margin: 24px auto; cursor: auto; overflow: auto; background: $white; box-shadow: 0 0 40px 0 lighten(#000, 25%);'
+      centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
+      modalEl.style.cssText = 'margin: 24px auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
+
+      // check to see if the document width is less than the responsive width
+      // if it is, initiate some responsive goodness
+      if(documentWidth <= responsiveWidth) {
+        modalEl.style.cssText = 'width: 100%; max-width: 100%; height: 100vh; max-height: 100vh; margin: 0; margin-left: 100%; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
+      }
 
       modalEl.appendChild(closeBtnEl);
       centerEl.appendChild(modalEl);
@@ -49,10 +57,10 @@
       $closeBtn = $('.b-btn_close-modal');
     }
 
-    // gut out the modal and then insert the close button and template
-    $('.b-modal').empty();
-    $('.b-modal').append($closeBtn);
-    $('.b-modal').append(html);
+    // gut out the modal, then insert the close button and template
+    $modal.empty();
+    $modal.append($closeBtn);
+    $modal.append(html);
 
     // lock up the scrolling on the body if there's a vertical scrollbar
     if(hazScollbar()) {
@@ -67,7 +75,14 @@
     }
 
     // fire it up
-    $container.hide().fadeIn();
+    if(documentWidth <= responsiveWidth) {
+      $container.show();
+      $modal.animate({
+        'margin-left': 0
+      }, 350);
+    } else {
+      $container.hide().fadeIn();
+    }
 
     // preventDefault and stopPropagation
     return false;
@@ -75,6 +90,13 @@
 
   var closeModal = function () {
     if(hazScollbar()) {
+      if(documentWidth <= responsiveWidth) {
+        $modal.animate({
+          'margin-left': '100%'
+        }, 350, function () {
+          $container.hide();
+        });
+      }
       $container.fadeOut(function () {
         // restore the scrollbar on callback
         $('body').css({
@@ -83,6 +105,13 @@
         });
       });
     } else {
+      if(documentWidth <= responsiveWidth) {
+        $modal.animate({
+          'margin-left': '100%'
+        }, 350, function () {
+          $container.hide();
+        });
+      }
       $container.fadeOut(function () {
         $('body').css({
           'overflow': ''
@@ -162,12 +191,15 @@
       options = $.extend({
         selector: this.selector,
         closeBtn: null,
-        html: '<p>everything is awesome</p>'
+        html: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.' +
+        '<p>Import some sexy HTML by doing: <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre></p>',
+        responsiveWidth: '320'
       }, options || {}); // options
 
       selector = options.selector;
       closeBtn = options.closeBtn || closeBtn;
       html = options.html;
+      responsiveWidth = options.responsiveWidth;
 
       (function init() {
         switch (action) {
