@@ -41,7 +41,7 @@
       // check to see if the document width is less than the responsive width
       // if it is, initiate some responsive goodness
       if(documentWidth <= responsiveWidth) {
-        modalEl.style.cssText = 'width: 100%; max-width: 100%; height: 100vh; max-height: 100vh; margin: 0; margin-left: 100%; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
+        modalEl.style.cssText = 'width: 100%; max-width: 100%; height: 100vh; max-height: 100vh; margin-left: 100%; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
       }
 
       modalEl.appendChild(closeBtnEl);
