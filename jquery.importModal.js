@@ -9,8 +9,8 @@
       closeBtn = '.b-btn_close-modal',
       html,
       scrollbarWidth,
-      documentWidth = document.body.clientWidth,
-      responsiveWidth;
+      responsiveWidth,
+      documentWidth = document.body.clientWidth;
 
   var bindModal = function () {
     $(selector).on('click', function (e) {
@@ -38,12 +38,6 @@
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
 
-      // check to see if the document width is less than the responsive width
-      // if it is, initiate some responsive goodness
-      if(documentWidth <= responsiveWidth) {
-        modalEl.style.cssText = 'width: 100%; max-width: 100%; height: 100vh; max-height: 100vh; margin-left: 100%; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
-      }
-
       modalEl.appendChild(closeBtnEl);
       centerEl.appendChild(modalEl);
       backgroundEl.appendChild(centerEl);
@@ -65,12 +59,27 @@
     scrollLock('lock');
 
     // fire it up
-    if(documentWidth <= responsiveWidth) {
+    if (mobileView()) {
+      $modal.css({
+        width: '100%',
+        'max-width': '100%',
+        height: '100vh',
+        'max-height': '100vh',
+        'margin-left': '100%',
+        overflow: 'auto'
+      });
       $container.show();
       $modal.animate({
         'margin-left': 0
       }, 350);
     } else {
+      $modal.css({
+        width: 'auto',
+        'max-width': '',
+        height: 'auto',
+        'max-height': '',
+        margin: '0 auto'
+      });
       $container.hide().fadeIn();
     }
 
@@ -80,7 +89,7 @@
 
   var closeModal = function () {
     // if it's a mobile modal, slide out the modal instead of just fading out
-    if(documentWidth <= responsiveWidth) {
+    if (mobileView()) {
       $modal.animate({
         'margin-left': '100%'
       }, 350, function () {
@@ -94,6 +103,15 @@
       });
     }
   }; // closeModal
+
+  var mobileView = function () {
+    documentWidth = document.body.clientWidth;
+    if (documentWidth <= responsiveWidth) {
+      return true;
+    } else {
+      return false;
+    }
+  }; // mobileView
 
   var scrollLock = function (action) {
     if (action === 'lock') {
@@ -197,8 +215,7 @@
       options = $.extend({
         selector: this.selector,
         closeBtn: null,
-        html: '<p>Import some sexy HTML by doing: <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre></p>'
-        + 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.',
+        html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.</p>',
         responsiveWidth: '320'
       }, options || {}); // options
 
