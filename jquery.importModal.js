@@ -1,23 +1,14 @@
 'use strict';
 
 (function ($) {
-  var tmpl,
-      $container = {},
+  var $container = {},
       $modal,
       $closeBtn,
       selector,
       closeBtn = '.b-btn_close-modal',
       html,
-      scrollbarWidth,
       responsiveWidth,
       documentWidth = document.body.clientWidth;
-
-  var bindModal = function () {
-    $(selector).on('click', function (e) {
-      openModal();
-      e.preventDefault();
-    });
-  }; // bindModal
 
   var openModal = function () {
     var containerEl = document.createElement('div'),
@@ -33,7 +24,7 @@
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
       centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
-      modalEl.style.cssText = 'margin: 24px auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;'
+      modalEl.style.cssText = 'margin: 24px auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
@@ -104,19 +95,25 @@
     }
   }; // closeModal
 
+  var bindModal = function () {
+    $(selector).on('click', function (e) {
+      openModal();
+      e.preventDefault();
+    });
+  }; // bindModal
+
   var mobileView = function () {
     documentWidth = document.body.clientWidth;
     if (documentWidth <= responsiveWidth) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }; // mobileView
 
   var scrollLock = function (action) {
     if (action === 'lock') {
       // lock up the scrolling on the body if there's a vertical scrollbar
-      if(scrollbarWidth()) {
+      if (scrollbarWidth()) {
         $('body').css({
           'overflow': 'hidden',
           'padding-right': scrollbarWidth() + 'px' // fix the scrollbar from pushing the content
@@ -124,10 +121,10 @@
       } else {
         $('body').css({
           'overflow': 'hidden'
-        })
+        });
       }
     } else if (action === 'unlock') {
-      if(scrollbarWidth()) {
+      if (scrollbarWidth()) {
         // restore the scrollbar on callback
         $('body').css({
           'overflow': '',
@@ -173,9 +170,9 @@
     return widthNoScroll - widthWithScroll;
   }; // hazScrollbar
 
-  var bind = function() {
+  var bind = function () {
     // bind close modal
-    $('body').on('click', '.b-modal-bg, ' + closeBtn, function (e) {
+    $('body').on('click', '.b-modal-bg, ' + closeBtn, function () {
       closeModal();
       return false;
     });
