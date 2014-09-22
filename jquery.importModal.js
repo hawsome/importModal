@@ -8,7 +8,7 @@
       selector,
       closeBtn = '.b-btn_close-modal',
       html,
-      hazScollbar,
+      scrollbarWidth,
       documentWidth = document.body.clientWidth,
       responsiveWidth;
 
@@ -62,17 +62,7 @@
     $modal.append($closeBtn);
     $modal.append(html);
 
-    // lock up the scrolling on the body if there's a vertical scrollbar
-    if(hazScollbar()) {
-      $('body').css({
-        'overflow': 'hidden',
-        'padding-right': '15px' // fix the scrollbar from pushing the content
-      });
-    } else {
-      $('body').css({
-        'overflow': 'hidden'
-      })
-    }
+    scrollLock('lock');
 
     // fire it up
     if(documentWidth <= responsiveWidth) {
@@ -89,38 +79,54 @@
   }; // openModal
 
   var closeModal = function () {
-    if(hazScollbar()) {
-      if(documentWidth <= responsiveWidth) {
-        $modal.animate({
-          'margin-left': '100%'
-        }, 350, function () {
-          $container.fadeOut();
+    // if it's a mobile modal, slide out the modal instead of just fading out
+    if(documentWidth <= responsiveWidth) {
+      $modal.animate({
+        'margin-left': '100%'
+      }, 350, function () {
+        $container.fadeOut(function () {
+          scrollLock('unlock');
         });
-      } else {
-        $container.fadeOut();
-      }
-      // restore the scrollbar on callback
-      $('body').css({
-        'overflow': '',
-        'padding-right': ''
       });
     } else {
-      if(documentWidth <= responsiveWidth) {
-        $modal.animate({
-          'margin-left': '100%'
-        }, 350, function () {
-          $container.fadeOut();
-        });
-      } else {
-        $container.fadeOut();
-      }
-      $('body').css({
-        'overflow': ''
+      $container.fadeOut(function () {
+        scrollLock('unlock');
       });
     }
   }; // closeModal
 
-  var hazScollbar = function () {
+  var scrollLock = function (action) {
+    if (action === 'lock') {
+      // lock up the scrolling on the body if there's a vertical scrollbar
+      if(scrollbarWidth()) {
+        $('body').css({
+          'overflow': 'hidden',
+          'padding-right': scrollbarWidth() + 'px' // fix the scrollbar from pushing the content
+        });
+      } else {
+        $('body').css({
+          'overflow': 'hidden'
+        })
+      }
+    } else if (action === 'unlock') {
+      if(scrollbarWidth()) {
+        // restore the scrollbar on callback
+        $('body').css({
+          'overflow': '',
+          'padding-right': ''
+        });
+      } else {
+        $('body').css({
+          'overflow': ''
+        });
+      }
+    } else {
+      console.warn('You didn\'t choose a valid action for the scrollLock function, you can only \'lock\' or \'unlock\' the scroll.');
+      return false;
+    }
+  }; // scrollLock
+
+  var scrollbarWidth = function () {
     var outer = document.createElement('div'),
         widthNoScroll,
         inner,
