@@ -94,28 +94,28 @@
         $modal.animate({
           'margin-left': '100%'
         }, 350, function () {
-          $container.hide();
+          $container.fadeOut();
         });
+      } else {
+        $container.fadeOut();
       }
-      $container.fadeOut(function () {
-        // restore the scrollbar on callback
-        $('body').css({
-          'overflow': '',
-          'padding-right': ''
-        });
+      // restore the scrollbar on callback
+      $('body').css({
+        'overflow': '',
+        'padding-right': ''
       });
     } else {
       if(documentWidth <= responsiveWidth) {
         $modal.animate({
           'margin-left': '100%'
         }, 350, function () {
-          $container.hide();
+          $container.fadeOut();
         });
+      } else {
+        $container.fadeOut();
       }
-      $container.fadeOut(function () {
-        $('body').css({
-          'overflow': ''
-        });
+      $('body').css({
+        'overflow': ''
       });
     }
   }; // closeModal
@@ -191,8 +191,8 @@
       options = $.extend({
         selector: this.selector,
         closeBtn: null,
-        html: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.' +
-        '<p>Import some sexy HTML by doing: <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre></p>',
+        html: '<p>Import some sexy HTML by doing: <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre></p>'
+        + 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.',
         responsiveWidth: '320'
       }, options || {}); // options
 
