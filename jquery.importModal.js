@@ -213,7 +213,7 @@
         selector: this.selector,
         closeBtn: null,
         html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.</p>',
-        responsiveWidth: '320'
+        responsiveWidth: '768'
       }, options || {}); // options
 
       selector = options.selector;
