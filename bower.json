@@ -1,0 +1,24 @@
+{
+  "name": "importModal",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hawsome/importModal",
+  "authors": [
+    "Chris Ha"
+  ],
+  "description": "A sexy jQuery modal that adapts to an awesome mobile layout when specified a breakpoint",
+  "main": "jquery.importModal.js",
+  "keywords": [
+    "modal",
+    "popup",
+    "jquery",
+    "responsive"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
