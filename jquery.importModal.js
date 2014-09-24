@@ -71,7 +71,8 @@
         'max-width': '',
         height: 'auto',
         'max-height': '',
-        margin: '0 auto'
+        'margin-right': 'auto',
+        'margin-left': 'auto'
       });
     }
 
