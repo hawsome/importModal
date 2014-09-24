@@ -191,26 +191,6 @@
     });
   }; // bind
 
-  $.extend({
-    modal: function (action) {
-      (function init() {
-        switch (action) {
-          case 'open':
-            openModal();
-            break;
-          case 'close':
-            closeModal();
-            break;
-          default:
-            console.error('You have chosen an invalid action, please pass only: \'open\', or \'close\'');
-        }
-        bind();
-        // maintain jQuery chainability
-        return this;
-      }()); // init
-    } // modal
-  }); // $.extend
-
   $.fn.extend({
     modal: function (action, options) {
       options = $.extend({
@@ -234,6 +214,9 @@
             break;
           case 'open':
             openModal();
+            break;
+          case 'close':
+            closeModal();
             break;
           default:
             console.error('You have chosen an invalid action, please pass only: \'bind\', \'open\', or \'close\'');

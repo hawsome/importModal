@@ -3,7 +3,7 @@ importModal :dancers:
 Why? Because responsive, yo! :beginner:
 
 ##Version
-1.0.4
+1.1.0
 
 ##Tech
 importModal requires jQuery to run
@@ -25,12 +25,12 @@ $('selector').modal('bind', { responsiveWidth: 320 });
 Open modal:
 
 ```javascript
-$.modal('open');
+$.fn.modal('open');
 ```
 Close modal:
 
 ```javascript
-$.modal('close');
+$.fn.modal('close');
 ```
 Easy peasy!
 
