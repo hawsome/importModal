@@ -24,7 +24,7 @@
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
       centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
-      modalEl.style.cssText = 'margin: 24px auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
+      modalEl.style.cssText = 'margin: 0 auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
@@ -51,6 +51,7 @@
 
     // fire it up
     if (mobileView()) {
+      $container.hide().fadeIn();
       $modal.css({
         width: '100%',
         'max-width': '100%',
@@ -59,9 +60,8 @@
         'margin-left': '100%',
         overflow: 'auto'
       });
-      $container.show();
       $modal.animate({
-        'margin-left': 0
+        'margin': 0
       }, 350);
     } else {
       $modal.css({
