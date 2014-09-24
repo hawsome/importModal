@@ -8,7 +8,8 @@
       closeBtn = '.b-btn_close-modal',
       html,
       responsiveWidth,
-      documentWidth = document.body.clientWidth;
+      documentWidth = document.body.clientWidth,
+      overflowContainer;
 
   var openModal = function () {
     var containerEl = document.createElement('div'),
@@ -24,7 +25,7 @@
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
       centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
-      modalEl.style.cssText = 'margin: 0 auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
+      modalEl.style.cssText = 'margin-right: auto; margin-left: auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
@@ -61,9 +62,10 @@
         overflow: 'auto'
       });
       $modal.animate({
-        'margin': 0
+        'margin-left': 0
       }, 350);
     } else {
+      $container.hide().fadeIn();
       $modal.css({
         width: 'auto',
         'max-width': '',
@@ -71,7 +73,6 @@
         'max-height': '',
         margin: '0 auto'
       });
-      $container.hide().fadeIn();
     }
 
     // preventDefault and stopPropagation
@@ -111,28 +112,30 @@
   }; // mobileView
 
   var scrollLock = function (action) {
+    var existingPaddingRight = parseInt($(overflowContainer).css('padding-right'));
+
     if (action === 'lock') {
       // lock up the scrolling on the body if there's a vertical scrollbar
       if (scrollbarWidth()) {
-        $('body').css({
-          'overflow': 'hidden',
-          'padding-right': scrollbarWidth() + 'px' // fix the scrollbar from pushing the content
+        $(overflowContainer).css({
+          'overflow-y': 'hidden',
+          'padding-right': existingPaddingRight + scrollbarWidth() + 'px' // fix the scrollbar from pushing the content
         });
       } else {
-        $('body').css({
-          'overflow': 'hidden'
+        $(overflowContainer).css({
+          'overflow-y': 'hidden'
         });
       }
     } else if (action === 'unlock') {
       if (scrollbarWidth()) {
         // restore the scrollbar on callback
-        $('body').css({
-          'overflow': '',
+        $(overflowContainer).css({
+          'overflow-y': '',
           'padding-right': ''
         });
       } else {
-        $('body').css({
-          'overflow': ''
+        $(overflowContainer).css({
+          'overflow-y': ''
         });
       }
     } else {
@@ -213,13 +216,15 @@
         selector: this.selector,
         closeBtn: null,
         html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.</p>',
-        responsiveWidth: '768'
+        responsiveWidth: '768',
+        overflowContainer: 'body'
       }, options || {}); // options
 
       selector = options.selector;
       closeBtn = options.closeBtn || closeBtn;
       html = options.html;
       responsiveWidth = options.responsiveWidth;
+      overflowContainer = options.overflowContainer;
 
       (function init() {
         switch (action) {
