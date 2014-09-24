@@ -9,7 +9,8 @@
       html,
       responsiveWidth,
       documentWidth = document.body.clientWidth,
-      overflowContainer;
+      overflowContainer,
+      isAnimating = false;
 
   var openModal = function () {
     var containerEl = document.createElement('div'),
@@ -51,8 +52,11 @@
     scrollLock('lock');
 
     // fire it up
+    isAnimating = true;
     if (mobileView()) {
-      $container.hide().fadeIn();
+      $container.hide().fadeIn(350, function () {
+        isAnimating = false;
+      });
       $modal.css({
         width: '100%',
         'max-width': '100%',
@@ -65,7 +69,9 @@
         'margin-left': 0
       }, 350);
     } else {
-      $container.hide().fadeIn();
+      $container.hide().fadeIn(350, function () {
+        isAnimating = false;
+      });
       $modal.css({
         width: 'auto',
         'max-width': '',
@@ -81,6 +87,7 @@
   }; // openModal
 
   var closeModal = function () {
+    isAnimating = true;
     // if it's a mobile modal, slide out the modal instead of just fading out
     if (mobileView()) {
       $modal.animate({
@@ -88,11 +95,14 @@
       }, 350, function () {
         $container.fadeOut(function () {
           scrollLock('unlock');
+        }, function () {
+          isAnimating = false;
         });
       });
     } else {
       $container.fadeOut(function () {
         scrollLock('unlock');
+        isAnimating = false;
       });
     }
   }; // closeModal
@@ -177,7 +187,9 @@
   var bind = function () {
     // bind close modal
     $('body').on('click', '.b-modal-bg, ' + closeBtn, function () {
-      closeModal();
+      if (!isAnimating) {
+        closeModal();
+      }
       return false;
     });
     // prevent the clicks from bubbling up when clicking on the modal
@@ -187,7 +199,9 @@
     // bind the ESC button
     $(document).on('keyup', function (e) {
       if (e.keyCode === 27) {
-        closeModal();
+        if (!isAnimating) {
+          closeModal();
+        }
       }
     });
   }; // bind
