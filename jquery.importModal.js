@@ -204,6 +204,7 @@
           default:
             console.error('You have chosen an invalid action, please pass only: \'open\', or \'close\'');
         }
+        bind();
         // maintain jQuery chainability
         return this;
       }()); // init
