@@ -10,7 +10,9 @@
       responsiveWidth,
       documentWidth = document.body.clientWidth,
       overflowContainer,
-      isAnimating = false;
+      isAnimating = false,
+      mqlToDesktop,
+      mqlToMobile;
 
   var openModal = function () {
     var containerEl = document.createElement('div'),
@@ -26,7 +28,7 @@
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
       centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
-      modalEl.style.cssText = 'margin-right: auto; margin-left: auto; cursor: auto; overflow: auto; box-shadow: 0 0 40px 0 #000;';
+      modalEl.style.cssText = 'cursor: auto;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
@@ -62,11 +64,9 @@
       });
       $modal.css({
         width: '100%',
-        'max-width': '100%',
-        height: '100vh',
-        'max-height': '100vh',
-        'margin-left': '100%',
-        overflow: 'auto'
+        'min-width': '100vw',
+        'min-height': '100vh',
+        'margin-left': '100%'
       });
       $modal.animate({
         'margin-left': 0
@@ -77,11 +77,8 @@
       });
       $modal.css({
         width: 'auto',
-        'max-width': '',
-        height: 'auto',
-        'max-height': '',
-        'margin-right': 'auto',
-        'margin-left': 'auto'
+        'min-width': '',
+        'min-height': ''
       });
     }
 
@@ -199,16 +196,38 @@
       }
       return false;
     });
+
     // prevent the clicks from bubbling up when clicking on the modal
     $('body').on('click', '.b-modal', function (e) {
       e.stopPropagation();
     });
+
     // bind the ESC button
     $(document).on('keyup', function (e) {
       if (e.keyCode === 27) {
         if (!isAnimating) {
           closeModal();
         }
+      }
+    });
+
+    mqlToDesktop.addListener(function (e) {
+      if(e.matches){
+        $modal.css({
+          'min-height': '',
+          'min-width': '',
+          'margin-left': ''
+        });
+      }
+    });
+
+    mqlToMobile.addListener(function (e) {
+      if(e.matches){
+        $modal.css({
+          'min-height': '100vh',
+          'min-width': '100vw',
+          'margin-left': '0'
+        });
       }
     });
   }; // bind
@@ -227,7 +246,11 @@
       closeBtn = options.closeBtn || closeBtn;
       html = options.html;
       responsiveWidth = options.responsiveWidth;
+      mqlToDesktop = window.matchMedia('(min-width: ' + responsiveWidth + 'px)');
+      mqlToMobile = window.matchMedia('(max-width: ' + responsiveWidth + 'px)');
       overflowContainer = options.overflowContainer;
+
+      console.log(mqlToMobile);
 
       (function init() {
         switch (action) {
