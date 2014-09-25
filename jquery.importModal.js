@@ -250,8 +250,6 @@
       mqlToMobile = window.matchMedia('(max-width: ' + responsiveWidth + 'px)');
       overflowContainer = options.overflowContainer;
 
-      console.log(mqlToMobile);
-
       (function init() {
         switch (action) {
           case 'bind':
