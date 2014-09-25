@@ -49,7 +49,10 @@
     $modal.append($closeBtn);
     $modal.append(html);
 
-    scrollLock('lock');
+    // only lock up the body/specified container if user doesn't specify not to with false
+    if (overflowContainer) {
+      scrollLock('lock');
+    }
 
     // fire it up
     isAnimating = true;
@@ -94,14 +97,18 @@
         'margin-left': '100%'
       }, 350, function () {
         $container.fadeOut(function () {
-          scrollLock('unlock');
+          if (overflowContainer) {
+            scrollLock('unlock');
+          }
         }, function () {
           isAnimating = false;
         });
       });
     } else {
       $container.fadeOut(function () {
-        scrollLock('unlock');
+        if (overflowContainer) {
+          scrollLock('unlock');
+        }
         isAnimating = false;
       });
     }

@@ -3,7 +3,7 @@ importModal :dancers:
 Why? Because responsive, yo! :beginner:
 
 ##Version
-1.1.2
+1.1.3
 
 ##Tech
 importModal requires jQuery to run
