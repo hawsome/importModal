@@ -28,7 +28,7 @@
       containerEl.className = 'b-modal-container';
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
-      centerEl.style.cssText = 'display: table-cell; position: absolute; top: 0; bottom: 0; text-align: left; vertical-align: middle;';
+      centerEl.style.cssText = 'display: table-cell; position: absolute; top: 0; bottom: 0; width: 100%; text-align: left; vertical-align: middle;';
       centerEl.className = 'b-modal-align-middle';
       modalEl.style.cssText = 'cursor: auto;';
       modalEl.className = 'b-modal';
@@ -246,9 +246,14 @@
     mqlToMobile.addListener(function (e) {
       if (e.matches) {
         $modal.css({
-          'min-height': '100%',
-          'min-width': '100%',
-          'margin-left': '0'
+          'position': 'fixed',
+          'top': 0,
+          'bottom': 0,
+          'overflow-y': 'scroll',
+          'width': '100%',
+          'min-width': '100vw',
+          'min-height': '100vh',
+          'margin-left': '100%'
         });
         $alignMiddle.css({
           'position': 'absolute',
