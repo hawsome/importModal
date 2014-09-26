@@ -2,6 +2,7 @@
 
 (function ($) {
   var $container = {},
+      $alignMiddle,
       $modal,
       $closeBtn,
       selector,
@@ -27,7 +28,8 @@
       containerEl.className = 'b-modal-container';
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
-      centerEl.style.cssText = 'display: table-cell; text-align: left; vertical-align: middle;';
+      centerEl.style.cssText = 'display: table-cell; position: absolute; top: 0; bottom: 0; text-align: left; vertical-align: middle;';
+      centerEl.className = 'b-modal-align-middle';
       modalEl.style.cssText = 'cursor: auto;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
@@ -42,6 +44,7 @@
 
       // assign the $container and $closeBtn
       $container = $('.b-modal-container');
+      $alignMiddle = $('.b-modal-align-middle');
       $modal = $('.b-modal');
       $closeBtn = $('.b-btn_close-modal');
     }
@@ -58,17 +61,25 @@
 
     // fire it up
     isAnimating = true;
-    if (mobileView()) {
+    if (isMobileView()) {
       $container.hide().fadeIn(350, function () {
         isAnimating = false;
       });
+      $alignMiddle.css({
+        'position': 'absolute',
+        'top': 0,
+        'bottom': 0
+      });
       $modal.css({
-        width: '100%',
+        'position': 'fixed',
+        'top': 0,
+        'bottom': 0,
+        'overflow-y': 'scroll',
+        'width': '100%',
         'min-width': '100vw',
         'min-height': '100vh',
         'margin-left': '100%'
-      });
-      $modal.animate({
+      }).animate({
         'margin-left': 0
       }, 350);
     } else {
@@ -76,7 +87,7 @@
         isAnimating = false;
       });
       $modal.css({
-        width: 'auto',
+        'width': 'auto',
         'min-width': '',
         'min-height': ''
       });
@@ -89,20 +100,19 @@
   var closeModal = function () {
     isAnimating = true;
     // if it's a mobile modal, slide out the modal instead of just fading out
-    if (mobileView()) {
+    if (isMobileView()) {
       $modal.animate({
         'margin-left': '100%'
       }, 350, function () {
-        $container.fadeOut(function () {
+        $container.fadeOut(400, function () {
           if (overflowContainer) {
             scrollLock('unlock');
           }
-        }, function () {
           isAnimating = false;
         });
       });
     } else {
-      $container.fadeOut(function () {
+      $container.fadeOut(400, function () {
         if (overflowContainer) {
           scrollLock('unlock');
         }
@@ -118,16 +128,16 @@
     });
   }; // bindModal
 
-  var mobileView = function () {
+  var isMobileView = function () {
     documentWidth = document.body.clientWidth;
     if (documentWidth <= responsiveWidth) {
       return true;
     }
     return false;
-  }; // mobileView
+  }; // isMobileView
 
   var scrollLock = function (action) {
-    var existingPaddingRight = parseInt($(overflowContainer).css('padding-right'));
+    var existingPaddingRight = parseInt($(overflowContainer).css('padding-right'), radix);
 
     if (action === 'lock') {
       // lock up the scrolling on the body if there's a vertical scrollbar
@@ -211,22 +221,39 @@
       }
     });
 
+    // from mobile to desktop
     mqlToDesktop.addListener(function (e) {
-      if(e.matches){
+      if (e.matches) {
         $modal.css({
-          'min-height': '',
+          'position': 'relative',
+          'top': '',
+          'bottom': '',
+          'overflow-y': '',
+          'width': '',
           'min-width': '',
+          'min-height': '',
           'margin-left': ''
+        });
+        $alignMiddle.css({
+          'position': 'static',
+          'top': '',
+          'bottom': ''
         });
       }
     });
 
+    // from desktop to mobile
     mqlToMobile.addListener(function (e) {
-      if(e.matches){
+      if (e.matches) {
         $modal.css({
-          'min-height': '100vh',
-          'min-width': '100vw',
+          'min-height': '100%',
+          'min-width': '100%',
           'margin-left': '0'
+        });
+        $alignMiddle.css({
+          'position': 'absolute',
+          'top': 0,
+          'bottom': 0
         });
       }
     });
