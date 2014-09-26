@@ -137,7 +137,7 @@
   }; // isMobileView
 
   var scrollLock = function (action) {
-    var existingPaddingRight = parseInt($(overflowContainer).css('padding-right'), radix);
+    var existingPaddingRight = parseInt($(overflowContainer).css('padding-right'));
 
     if (action === 'lock') {
       // lock up the scrolling on the body if there's a vertical scrollbar
