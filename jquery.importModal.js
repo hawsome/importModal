@@ -205,7 +205,10 @@
         'top': '',
         'bottom': ''
       });
-      $alignMiddle.removeAttr('style');
+      $alignMiddle.removeAttr('style').css({
+        'display': 'table-cell',
+        'vertical-align': 'middle'
+      });
     }
   }; // mobileToDesktop
 
