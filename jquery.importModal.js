@@ -92,7 +92,6 @@
         'min-height': ''
       });
     }
-    $modal.hide().show(); // to scroll to the top
 
     // preventDefault and stopPropagation
     return false;
