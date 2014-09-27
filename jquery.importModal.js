@@ -24,11 +24,11 @@
 
     // if the modal doesn't exist, create it
     if (!$container.length) {
-      containerEl.style.cssText = 'display: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 999999; overflow-x: hidden; overflow-y: auto;';
+      containerEl.style.cssText = 'display: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 999999; overflow: auto;';
       containerEl.className = 'b-modal-container';
       backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
-      centerEl.style.cssText = 'display: table-cell; position: absolute; top: 0; bottom: 0; width: 100%; text-align: left; vertical-align: middle;';
+      centerEl.style.cssText = 'display: table-cell; vertical-align: middle;';
       centerEl.className = 'b-modal-align-middle';
       modalEl.style.cssText = 'cursor: auto;';
       modalEl.className = 'b-modal';
@@ -92,6 +92,7 @@
         'min-height': ''
       });
     }
+    $modal.hide().show(); // to scroll to the top
 
     // preventDefault and stopPropagation
     return false;
@@ -198,6 +199,28 @@
     return widthNoScroll - widthWithScroll;
   }; // hazScrollbar
 
+  var mobileToDesktop = function (e) {
+    if (e.matches) {
+      $modal.removeAttr('style').css({
+        'position': '',
+        'top': '',
+        'bottom': ''
+      });
+      $alignMiddle.removeAttr('style');
+    }
+  }; // mobileToDesktop
+
+  var desktopToMobile = function (e) {
+    if (e.matches) {
+      $modal.removeAttr('style').css({
+        'position': 'absolute',
+        'top': 0,
+        'bottom': 0
+      });
+      $alignMiddle.removeAttr('style');
+    }
+  }; // desktopToMobile
+
   var bind = function () {
     // bind close modal
     $('body').on('click', '.b-modal-bg, ' + closeBtn, function () {
@@ -223,44 +246,12 @@
 
     // from mobile to desktop
     mqlToDesktop.addListener(function (e) {
-      if (e.matches) {
-        $modal.css({
-          'position': 'relative',
-          'top': '',
-          'bottom': '',
-          'overflow-y': '',
-          'width': '',
-          'min-width': '',
-          'min-height': '',
-          'margin-left': ''
-        });
-        $alignMiddle.css({
-          'position': 'static',
-          'top': '',
-          'bottom': ''
-        });
-      }
+      mobileToDesktop(e);
     });
 
     // from desktop to mobile
     mqlToMobile.addListener(function (e) {
-      if (e.matches) {
-        $modal.css({
-          'position': 'fixed',
-          'top': 0,
-          'bottom': 0,
-          'overflow-y': 'scroll',
-          'width': '100%',
-          'min-width': '100vw',
-          'min-height': '100vh',
-          'margin-left': '100%'
-        });
-        $alignMiddle.css({
-          'position': 'absolute',
-          'top': 0,
-          'bottom': 0
-        });
-      }
+      desktopToMobile(e);
     });
   }; // bind
 
@@ -278,9 +269,10 @@
       closeBtn = options.closeBtn || closeBtn;
       html = options.html;
       responsiveWidth = options.responsiveWidth;
+      overflowContainer = options.overflowContainer;
+
       mqlToDesktop = window.matchMedia('(min-width: ' + responsiveWidth + 'px)');
       mqlToMobile = window.matchMedia('(max-width: ' + responsiveWidth + 'px)');
-      overflowContainer = options.overflowContainer;
 
       (function init() {
         switch (action) {
