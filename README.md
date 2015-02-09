@@ -41,6 +41,12 @@ $.modal('open', {
   html: '<div>Awesome!</div>', // pass in a string of html right hurr
   responsiveWidth: '768', // this is the breakpoint for that responsive goodness
   overflowContainer: 'body' // this element's overscroll will be hidden when the modal is launched (prevents unnecessary scroll action on the background)
+  afterOpenCallback: function () {
+    // do cool shizzle after the modal opens
+  },
+  afterCloseCallback: function () {
+    // do sweet shizzle after the modal is closed
+  }
 });
 ```
 
