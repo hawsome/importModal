@@ -1,6 +1,5 @@
-'use strict';
-
 (function ($) {
+  'use strict';
   var $container = {},
       $alignMiddle,
       $modal,
@@ -11,6 +10,8 @@
       responsiveWidth,
       documentWidth = document.body.clientWidth,
       overflowContainer,
+      afterOpenCallback,
+      afterCloseCallback,
       isAnimating = false,
       mqlToDesktop,
       mqlToMobile;
@@ -54,6 +55,8 @@
     $modal.append($closeBtn);
     $modal.append(html);
 
+    // TODO: add an ID to the modal and then do Element.scrollTop to make sure we always open at the top
+
     // only lock up the body/specified container if user doesn't specify not to with false
     if (overflowContainer) {
       scrollLock('lock');
@@ -75,8 +78,6 @@
         'top': 0,
         'bottom': 0,
         'overflow-y': 'scroll',
-        'width': '100%',
-        'min-width': '100vw',
         'min-height': '100vh',
         'margin-left': '100%'
       }).animate({
@@ -88,9 +89,12 @@
       });
       $modal.css({
         'width': 'auto',
-        'min-width': '',
         'min-height': ''
       });
+    }
+
+    if (afterOpenCallback !== null) {
+      afterOpenCallback();
     }
 
     // preventDefault and stopPropagation
@@ -118,6 +122,10 @@
         }
         isAnimating = false;
       });
+    }
+
+    if (afterCloseCallback !== null) {
+      afterCloseCallback();
     }
   }; // closeModal
 
@@ -262,9 +270,11 @@
       options = $.extend({
         selector: this.selector,
         closeBtn: null,
-        html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.</p>',
+        html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre>',
         responsiveWidth: '768',
-        overflowContainer: 'body'
+        overflowContainer: 'body',
+        afterOpenCallback: null,
+        afterCloseCallback: null,
       }, options || {}); // options
 
       selector = options.selector;
@@ -272,6 +282,8 @@
       html = options.html;
       responsiveWidth = options.responsiveWidth;
       overflowContainer = options.overflowContainer;
+      afterOpenCallback = options.afterOpenCallback;
+      afterCloseCallback = options.afterCloseCallback;
 
       mqlToDesktop = window.matchMedia('(min-width: ' + responsiveWidth + 'px)');
       mqlToMobile = window.matchMedia('(max-width: ' + responsiveWidth + 'px)');

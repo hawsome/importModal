@@ -3,7 +3,7 @@ importModal :dancers:
 Why? Because responsive, yo! :beginner:
 
 ##Version
-1.2.1
+1.2.2
 
 ##Tech
 importModal requires jQuery to run
@@ -35,13 +35,13 @@ Easy peasy!
 
 ##Default Options
 ```javascript
-options = {
+$.modal('open', {
   selector: this.selector, // the selector to bind
   closeBtn: '.b-btn_close-modal', // change this if you wanna use your own
   html: '<div>Awesome!</div>', // pass in a string of html right hurr
   responsiveWidth: '768', // this is the breakpoint for that responsive goodness
   overflowContainer: 'body' // this element's overscroll will be hidden when the modal is launched (prevents unnecessary scroll action on the background)
-}
+});
 ```
 
 License
