@@ -1,7 +1,6 @@
-'use strict';
-
 (function ($) {
-  var $container = {},
+  'use strict';
+  var $container = null,
       $alignMiddle,
       $modal,
       $closeBtn,
@@ -11,9 +10,13 @@
       responsiveWidth,
       documentWidth = document.body.clientWidth,
       overflowContainer,
+      afterOpenCallback,
+      afterCloseCallback,
       isAnimating = false,
       mqlToDesktop,
-      mqlToMobile;
+      mqlToMobile,
+      currScrollPos,
+      $bepWrapper = $('.b-bep-wrapper');
 
   var openModal = function () {
     var containerEl = document.createElement('div'),
@@ -23,14 +26,14 @@
         closeBtnEl = document.createElement('a');
 
     // if the modal doesn't exist, create it
-    if (!$container.length) {
-      containerEl.style.cssText = 'display: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 999999; overflow: auto;';
+    if (!$container) {
+      containerEl.style.cssText = 'display: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 999999; overflow-x: hidden; overflow-y: auto;';
       containerEl.className = 'b-modal-container';
-      backgroundEl.style.cssText = 'display: table; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
+      backgroundEl.style.cssText = 'display: table; position: absolute; top: 0; right: 0; bottom: 0; left: 0; table-layout: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); cursor: pointer;';
       backgroundEl.className = 'b-modal-bg';
       centerEl.style.cssText = 'display: table-cell; vertical-align: middle;';
       centerEl.className = 'b-modal-align-middle';
-      modalEl.style.cssText = 'cursor: auto;';
+      modalEl.style.cssText = 'box-sizing: border-box; cursor: auto;';
       modalEl.className = 'b-modal';
       closeBtnEl.href = '#';
       closeBtnEl.className = 'b-btn_close-modal';
@@ -47,6 +50,8 @@
       $alignMiddle = $('.b-modal-align-middle');
       $modal = $('.b-modal');
       $closeBtn = $('.b-btn_close-modal');
+    } else {
+      $container.prependTo('body');
     }
 
     // gut out the modal, then insert the close button and template
@@ -64,24 +69,22 @@
     if (isMobileView()) {
       $container.hide().fadeIn(350, function () {
         isAnimating = false;
-      });
-      $alignMiddle.css({
-        'position': 'absolute',
-        'top': 0,
-        'bottom': 0
+
+        // hide the BEP and store the current scroll position
+        setCurrScrollPos();
+        $bepWrapper.hide();
       });
       $modal.css({
-        'position': 'fixed',
-        'top': 0,
-        'bottom': 0,
-        'overflow-y': 'scroll',
-        'width': '100%',
-        'min-width': '100vw',
+        'min-width': '100%',
         'min-height': '100vh',
         'margin-left': '100%'
       }).animate({
         'margin-left': 0
       }, 350);
+
+      if (afterOpenCallback !== null) {
+        afterOpenCallback();
+      }
     } else {
       $container.hide().fadeIn(350, function () {
         isAnimating = false;
@@ -91,6 +94,10 @@
         'min-width': '',
         'min-height': ''
       });
+
+      if (afterOpenCallback !== null) {
+        afterOpenCallback();
+      }
     }
 
     // preventDefault and stopPropagation
@@ -99,8 +106,12 @@
 
   var closeModal = function () {
     isAnimating = true;
-    // if it's a mobile modal, slide out the modal instead of just fading out
-    if (isMobileView()) {
+
+    if (isMobileView()) { // if it's a mobile modal, slide out the modal instead of just fading out
+      // restore the BEP and scroll position
+      $bepWrapper.show();
+      $(document).scrollTop(currScrollPos);
+
       $modal.animate({
         'margin-left': '100%'
       }, 350, function () {
@@ -108,15 +119,23 @@
           if (overflowContainer) {
             scrollLock('unlock');
           }
+          if (afterCloseCallback !== null) {
+            afterCloseCallback();
+          }
           isAnimating = false;
+          $(this).detach();
         });
       });
-    } else {
+    } else { // if it's on desktop layout
       $container.fadeOut(400, function () {
         if (overflowContainer) {
           scrollLock('unlock');
         }
+        if (afterCloseCallback !== null) {
+          afterCloseCallback();
+        }
         isAnimating = false;
+        $(this).detach();
       });
     }
   }; // closeModal
@@ -127,6 +146,10 @@
       e.preventDefault();
     });
   }; // bindModal
+
+  var setCurrScrollPos = function () {
+    currScrollPos = $(document).scrollTop();
+  }; // setCurrScrollPos
 
   var isMobileView = function () {
     documentWidth = document.body.clientWidth;
@@ -143,24 +166,26 @@
       // lock up the scrolling on the body if there's a vertical scrollbar
       if (scrollbarWidth()) {
         $(overflowContainer).css({
-          'overflow-y': 'hidden',
+          // 'position': 'fixed',
+          'overflow': 'hidden',
           'padding-right': existingPaddingRight + scrollbarWidth() + 'px' // fix the scrollbar from pushing the content
         });
       } else {
         $(overflowContainer).css({
-          'overflow-y': 'hidden'
+          'overflow': 'hidden'
         });
       }
     } else if (action === 'unlock') {
       if (scrollbarWidth()) {
         // restore the scrollbar on callback
         $(overflowContainer).css({
-          'overflow-y': '',
+          'position': '',
+          'overflow': '',
           'padding-right': ''
         });
       } else {
         $(overflowContainer).css({
-          'overflow-y': ''
+          'overflow': ''
         });
       }
     } else {
@@ -198,29 +223,21 @@
     return widthNoScroll - widthWithScroll;
   }; // hazScrollbar
 
-  var mobileToDesktop = function (e) {
-    if (e.matches) {
-      $modal.removeAttr('style').css({
-        'position': '',
-        'top': '',
-        'bottom': ''
-      });
-      $alignMiddle.removeAttr('style').css({
-        'display': 'table-cell',
-        'vertical-align': 'middle'
-      });
-    }
+  var mobileToDesktop = function () {
+    $modal.removeAttr('style').css({
+      'position': '',
+      'top': '',
+      'bottom': ''
+    });
+    $alignMiddle.removeAttr('style').css({
+      'display': 'table-cell',
+      'vertical-align': 'middle'
+    });
   }; // mobileToDesktop
 
-  var desktopToMobile = function (e) {
-    if (e.matches) {
-      $modal.removeAttr('style').css({
-        'position': 'absolute',
-        'top': 0,
-        'bottom': 0
-      });
-      $alignMiddle.removeAttr('style');
-    }
+  var desktopToMobile = function () {
+    $modal.removeAttr('style');
+    $alignMiddle.removeAttr('style');
   }; // desktopToMobile
 
   var bind = function () {
@@ -246,14 +263,13 @@
       }
     });
 
-    // from mobile to desktop
-    mqlToDesktop.addListener(function (e) {
-      mobileToDesktop(e);
-    });
-
-    // from desktop to mobile
-    mqlToMobile.addListener(function (e) {
-      desktopToMobile(e);
+    // check responsive media query
+    $(window).resize(function() {
+      if (mqlToDesktop) {
+        mobileToDesktop();
+      } else if (mqlToMobile) {
+        desktopToMobile();
+      }
     });
   }; // bind
 
@@ -262,9 +278,11 @@
       options = $.extend({
         selector: this.selector,
         closeBtn: null,
-        html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo modi nostrum delectus nam ad fugit exercitationem maxime! Perspiciatis expedita dolore fugiat nulla deserunt tempore rem, assumenda, quia, commodi non esse!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis esse, quis porro error ipsa architecto dicta sint dolore vitae. Impedit sunt, odit eveniet corporis repudiandae eos optio error odio nulla.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias est quibusdam, possimus doloribus sapiente! Maxime quo quia quisquam quibusdam laboriosam vel, magnam repellat aliquid reprehenderit alias, nisi molestias placeat earum?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti autem nam optio, aliquam aliquid aperiam debitis similique distinctio, reiciendis, sed dolorum minima minus deleniti, deserunt repellendus quod! Eos, aliquid, ut.</p>',
+        html: '<p>Import some sexy HTML by doing:</p> <pre style="font-size: 12px">$(\'selector\').modal(\'bind\', {<br>&nbsp;&nbsp;html: \'sexy HTML goes here\'<br>});</pre>',
         responsiveWidth: '768',
-        overflowContainer: 'body'
+        overflowContainer: 'body',
+        afterOpenCallback: null,
+        afterCloseCallback: null,
       }, options || {}); // options
 
       selector = options.selector;
@@ -272,9 +290,12 @@
       html = options.html;
       responsiveWidth = options.responsiveWidth;
       overflowContainer = options.overflowContainer;
+      afterOpenCallback = options.afterOpenCallback;
+      afterCloseCallback = options.afterCloseCallback;
 
-      mqlToDesktop = window.matchMedia('(min-width: ' + responsiveWidth + 'px)');
-      mqlToMobile = window.matchMedia('(max-width: ' + responsiveWidth + 'px)');
+      console.log(Modernizr.mq);
+      mqlToDesktop = Modernizr.mq('min-width: ' + responsiveWidth + 'px');
+      mqlToMobile = Modernizr.mq('max-width: ' + responsiveWidth + 'px');
 
       (function init() {
         switch (action) {
