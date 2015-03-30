@@ -91,13 +91,16 @@
       });
       $modal.css({
         'width': 'auto',
-        'min-width': '',
         'min-height': ''
       });
 
       if (afterOpenCallback !== null) {
         afterOpenCallback();
       }
+    }
+
+    if (afterOpenCallback !== null) {
+      afterOpenCallback();
     }
 
     // preventDefault and stopPropagation
@@ -137,6 +140,10 @@
         isAnimating = false;
         $(this).detach();
       });
+    }
+
+    if (afterCloseCallback !== null) {
+      afterCloseCallback();
     }
   }; // closeModal
 
